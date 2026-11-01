@@ -106,7 +106,7 @@ private fun Home(vm: MainViewModel, ui: UiState) {
 }
 
 @Composable
-private fun ListScreen(vm: MainViewModel, ui: UiState) {
+private fun ColumnScope.ListScreen(vm: MainViewModel, ui: UiState) {
     Text("${ui.items.size} فيديو • المحدد ${ui.items.count { it.selected }}", style = MaterialTheme.typography.titleMedium)
 
     Spacer(Modifier.height(8.dp))
@@ -151,7 +151,7 @@ private fun <T> LazyRowChips(options: List<T>, selected: T, label: (T) -> String
 }
 
 @Composable
-private fun Queue(vm: MainViewModel) {
+private fun ColumnScope.Queue(vm: MainViewModel) {
     val jobs by vm.jobs.collectAsStateWithLifecycle()
     Text("التنزيلات (${jobs.count { it.status == Status.DONE }}/${jobs.size})", style = MaterialTheme.typography.titleLarge)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
@@ -185,7 +185,7 @@ private const val DESKTOP_UA =
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-private fun Login(vm: MainViewModel) {
+private fun ColumnScope.Login(vm: MainViewModel) {
     val ctx = androidx.compose.ui.platform.LocalContext.current
     var site by remember { mutableStateOf(SITES[0]) }
     var current by remember { mutableStateOf(site.second) }
@@ -220,7 +220,7 @@ private fun Login(vm: MainViewModel) {
                 "LinkedIn" -> "https://www.linkedin.com/"
                 else -> "https://www.youtube.com/"
             }
-            val ok = CookieStore.saveFrom(ctx, base) |
+            val ok = CookieStore.saveFrom(ctx, base) or
                 (site.first == "YouTube" && CookieStore.saveFrom(ctx, "https://accounts.google.com/"))
             saved = if (ok) "✅ تم حفظ جلسة ${site.first}" else "لا توجد كوكيز — سجّل الدخول أولاً"
             vm.refreshCookies()
